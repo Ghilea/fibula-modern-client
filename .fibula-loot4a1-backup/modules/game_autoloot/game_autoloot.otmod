@@ -1,0 +1,14 @@
+Module
+  name: game_autoloot
+  description: Manual-interaction autoloot with client-side filters for Fibula
+  author: Fibula Modern Client
+  version: 0.1.0
+
+  autoload: true
+  autoload-priority: 1250
+  sandboxed: true
+  dependencies: [ game_interface, game_containers, game_inventory ]
+  scripts: [ autoloot ]
+
+  @onLoad: AutoLoot.init()
+  @onUnload: AutoLoot.terminate()

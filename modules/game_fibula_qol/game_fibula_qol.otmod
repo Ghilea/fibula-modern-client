@@ -1,0 +1,13 @@
+Module
+  name: game_fibula_qol
+  description: Fibula backpack capacity, separate nested bag windows and magic-level HUD progress
+  author: Fibula Modern Client
+  version: 0.1.1
+  autoload: true
+  autoload-priority: 1400
+  sandboxed: true
+  dependencies: [ game_interface, game_containers, game_inventory, game_wowhud, game_wowpopup, game_autoloot ]
+  scripts: [ fibula_qol ]
+
+  @onLoad: FibulaQol.init()
+  @onUnload: FibulaQol.terminate()
