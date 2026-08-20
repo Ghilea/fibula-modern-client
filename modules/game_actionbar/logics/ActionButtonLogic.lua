@@ -391,11 +391,21 @@ end
 
 --- Translates hotkey text for display
 local function translateDisplayHotkey(text)
-    if HotkeyShortcuts[text] then
-        text = HotkeyShortcuts[text]
-    elseif string.len(text) > 5 then
-        text = "..." .. string.sub(text, string.len(text) - 2, string.len(text))
+    if not text then
+        return ''
     end
+
+    text = HotkeyShortcuts[text] or text
+    text = text:gsub('Primary%+', 'C')
+    text = text:gsub('Control%+', 'C')
+    text = text:gsub('Ctrl%+', 'C')
+    text = text:gsub('Shift%+', 'S')
+    text = text:gsub('Alt%+', 'A')
+
+    if string.len(text) > 5 then
+        text = string.sub(text, 1, 5)
+    end
+
     return text
 end
 

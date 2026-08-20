@@ -929,6 +929,7 @@ function onContainerOpen(container, previousContainer)
         previousContainer.itemsPanel = nil
     else
         containerWindow = g_ui.createWidget('ContainerWindow')
+        containerWindow:hide()
     end
     containerWindow:setId('container' .. container:getId())
     local containerPanel = containerWindow:getChildById('contentsPanel')
@@ -1109,8 +1110,9 @@ function onContainerOpen(container, previousContainer)
     end
 
     if not previousContainer then
-        local panel = modules.game_interface.findContentPanelAvailable(containerWindow, cellSize.height)
+        local panel = modules.game_interface.getRootPanel()
         panel:addChild(containerWindow)
+        containerWindow:breakAnchors()
     end
 
     if not previousContainer or previousContainer:getCapacity() >= container:getCapacity() then
@@ -1127,6 +1129,92 @@ function onContainerOpen(container, previousContainer)
     end
 
     containerWindow:setup()
+
+    -- Clean floating bag / loot chrome.
+    containerWindow:setImageSource('')
+    containerWindow:setBackgroundColor('#071019ee')
+    containerWindow:setBorderWidth(1)
+    containerWindow:setBorderColor('#526782')
+
+    local topBar = containerWindow:recursiveGetChildById('miniwindowTopBar')
+    if topBar then
+        topBar:setImageSource('')
+        topBar:setBackgroundColor('#0f1823ec')
+    end
+
+    local contents = containerWindow:getChildById('contentsPanel')
+    if contents then
+        contents:setImageSource('')
+        contents:setBackgroundColor('#050a11d8')
+    end
+
+    local miniBorder = containerWindow:getChildById('miniborder')
+    if miniBorder then
+        miniBorder:hide()
+    end
+
+    local separator = containerWindow:getChildById('separator')
+    if separator and not containerWindow:getChildById('pagePanel'):isVisible() then
+        separator:hide()
+    end
+
+    local title = containerWindow:getChildById('miniwindowTitle')
+    if title then
+        title:setColor('#d8e0ea')
+    end
+
+    -- WoW-like floating container chrome.
+    containerWindow:setImageSource('')
+    containerWindow:setBackgroundColor('#080d14e8')
+    containerWindow:setBorderWidth(1)
+    containerWindow:setBorderColor('#526782')
+
+    local floatingHeader = containerWindow:getChildById('miniwindowHeader')
+    if floatingHeader then
+        floatingHeader:setImageSource('')
+        floatingHeader:setBackgroundColor('#101925e8')
+    end
+
+    local floatingContents = containerWindow:getChildById('contentsPanel')
+    if floatingContents then
+        floatingContents:setBackgroundColor('#05080d88')
+    end
+
+    if not previousContainer then
+        local floatingRoot = modules.game_interface.getRootPanel()
+        local rootSize = floatingRoot:getSize()
+        local winSize = containerWindow:getSize()
+
+        local cascade = 0
+        for _, candidate in pairs(g_game.getContainers()) do
+            if candidate ~= container and candidate.window and candidate.window:getParent() == floatingRoot then
+                cascade = cascade + 1
+            end
+        end
+        cascade = math.min(cascade, 5)
+
+        -- Floating bag/loot zone: right side, starting below the minimap.
+        -- This avoids the old bottom-left/bottom-edge pile-up.
+        local row = cascade % 4
+        local column = math.floor(cascade / 4)
+
+        local popupX = rootSize.width - winSize.width - 54 - column * (winSize.width + 18)
+        local popupY = 190 + row * 34
+
+        popupX = math.max(24, popupX)
+        popupY = math.max(90, popupY)
+
+        if popupY + winSize.height > rootSize.height - 120 then
+            popupY = math.max(90, rootSize.height - winSize.height - 130)
+        end
+
+        containerWindow:setPosition({
+            x = popupX,
+            y = popupY
+        })
+        containerWindow:show()
+        containerWindow:raise()
+    end
     
     -- Apply current sorting mode if one is active and manual sort mode is disabled
     local currentSortMode = containerSettings and containerSettings['currentSortMode']

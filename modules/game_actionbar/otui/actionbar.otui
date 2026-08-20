@@ -1,12 +1,18 @@
 ActionButton < UIButton
   font: cipsoftFont
-  size: 34 34
+  size: 40 40
   margin-left: 2
-  image-source: /images/game/actionbar/actionbarslot
+  background-color: #0a0f17e8
+  border-width: 1
+  border-color: #4b5b70
+
+  $hover:
+    border-color: #71849f
+    background-color: #101a27f0
   Item
     id: item
     anchors.fill: parent
-    padding: 1
+    padding: 4
     virtual: true
     draggable: true
     &selectable: true
@@ -50,6 +56,7 @@ ActionButton < UIButton
 
   Label
     id: hotkeyLabel
+    color: #f0d58b
     anchors.top: parent.top
     anchors.right: parent.right
     margin-right: 2
@@ -62,6 +69,7 @@ ActionButton < UIButton
 
   Label
     id: parameterText
+    color: #c8d0dc
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.bottom: parent.bottom
@@ -191,14 +199,15 @@ RightSliders < Panel
 Panel
   id: actionBar
   focusable: false
-  image-source: /images/ui/actionbar/actionbar_background-light
-  image-border: 1
+  background-color: #00000000
+  border-width: 1
+  border-color: #334156
   //margin-top: 2
   padding-top: 3
   padding-bottom: 1
 
   $on:
-    height: 36
+    height: 42
     visible: true
 
   $!on:
@@ -207,6 +216,8 @@ Panel
 
   LeftSliders
     id: prevPanel
+    visible: false
+    width: 0
     anchors.left: parent.left
     anchors.verticalCenter: parent.verticalCenter
     margin-left: 1
@@ -216,11 +227,11 @@ Panel
     id: tabBar
     anchors.top: parent.top
     anchors.bottom: parent.bottom
-    anchors.left: prev.right
-    anchors.right: nextPanel.left
-    //margin-left: 1
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 4
     margin-right: 4
-    margin-top: -2
+    margin-top: 0
     horizontal-scrollbar: actionScroll
     layout: horizontalBox
     @onGeometryChange: modules.game_actionbar.updateVisibleWidgets()
@@ -230,12 +241,14 @@ Panel
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     anchors.right: parent.right
-    step: 37
+    step: 42
     pixels-scroll: true
     visible: false
 
   RightSliders
     id: nextPanel
+    visible: false
+    width: 0
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
     margin-right: 1

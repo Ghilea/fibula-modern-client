@@ -1,0 +1,13 @@
+Module
+  name: game_wowpopup
+  description: Stable WoW-style character, minimap and bottom-right game buttons for Fibula
+  author: Fibula Modern Client
+  version: 0.7.0
+
+  autoload: true
+  autoload-priority: 1150
+  sandboxed: true
+  scripts: [ wowpopup ]
+
+  @onLoad: WowPopup.init()
+  @onUnload: WowPopup.terminate()

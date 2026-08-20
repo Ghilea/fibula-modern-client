@@ -1,0 +1,12 @@
+Module
+  name: game_wowpopup
+  description: Stable WoW-style native equipment popup, minimap and utility dock for Fibula
+  author: Fibula Modern Client
+  version: 0.9.4
+  autoload: true
+  autoload-priority: 1150
+  sandboxed: true
+  scripts: [ wowpopup ]
+
+  @onLoad: WowPopup.init()
+  @onUnload: WowPopup.terminate()

@@ -129,7 +129,7 @@ end
 function setupActionBar(n)
     local actionbar = actionBars[n]
     local barState = ApiJson.getActionBar(n) or {}
-    local visible = barState.isVisible and true or false
+    local visible = (n == 1 or n == 2) and true or ((n == 3) and false or (barState.isVisible and true or false))
     actionbar:setVisible(visible)
     actionbar:setOn(visible)
     local locked = barState.isLocked and true or false
@@ -149,9 +149,16 @@ function setupActionBar(n)
            else
                widget = g_ui.createWidget('UIWidget', actionbar.tabBar)
                widget:setId(n .. "." .. i)
-               widget:setSize({width = 34, height = 34})
+               widget:setSize(n < 4 and {width = 40, height = 40} or {width = 34, height = 34})
                widget:setMarginLeft(2)
-               widget:setImageSource('/images/game/actionbar/actionbarslot')
+               if n < 4 then
+                   widget:setImageSource('')
+                   widget:setBackgroundColor('#0a0f17e8')
+                   widget:setBorderWidth(1)
+                   widget:setBorderColor('#4b5b70')
+               else
+                   widget:setImageSource('/images/game/actionbar/actionbarslot')
+               end
                widget:setDraggable(false)
                
                widget.onDrop = function(self, draggedWidget, mousePos)

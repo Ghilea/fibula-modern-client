@@ -2,6 +2,9 @@ PhantomMiniWindow
   id: mainmappanel
   draggable: true
   phantom: false
+  background-color: #05080d70
+  border-width: 1
+  border-color: #42546d
   &panelHeight: 116
   height: 116
 
@@ -12,8 +15,9 @@ PhantomMiniWindow
     margin-top: 5
     margin-left: 8
     size: 115 111
-    image-source: /images/ui/1pixel_down_frame
-
+    background-color: #05080d50
+    border-width: 1
+    border-color: #5b6f8a
     Minimap
       id: minimap
       anchors.fill: parent

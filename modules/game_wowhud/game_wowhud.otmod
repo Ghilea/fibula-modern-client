@@ -1,0 +1,14 @@
+Module
+  name: game_wowhud
+  description: WoW-inspired fullscreen HUD for Fibula Modern Client
+  author: Fibula Modern Client
+  version: 0.3.2
+
+  autoload: true
+  autoload-priority: 1000
+  sandboxed: true
+  dependencies: [ game_interface, game_mainpanel, game_healthinfo ]
+  scripts: [ wowhud ]
+
+  @onLoad: WowHud.init()
+  @onUnload: WowHud.terminate()

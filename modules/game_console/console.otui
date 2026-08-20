@@ -120,7 +120,7 @@ ConsolePhantomLabel < UILabel
   selection-background-color: #999999
 
 ConsoleTabBar < MoveableTabBar
-  height: 28
+  height: 24
   phantom: true
 
 ConsoleTabBarPanel < MoveableTabBarPanel
@@ -129,8 +129,8 @@ ConsoleTabBarPanel < MoveableTabBarPanel
   ScrollablePanel
     id: consoleBuffer
     anchors.fill: parent
-    image-source: /images/ui/3pixel_frame_borderimage
-    image-border: 4
+    background-color: #05080d30
+    border-width: 0
     padding: 1
     padding-right: 12
     padding-left: 4
@@ -154,35 +154,36 @@ ConsoleTabBarPanel < MoveableTabBarPanel
     margin-bottom: 4
 
 ConsoleTabBarButton < UIButton
-  size: 96 18
-  image-source: /images/ui/console_button
-  image-clip: 0 18 96 18
-  color: #7f7f7fff
-  text-offset: 0 -1
+  size: 96 20
+  background-color: #10172260
+  border-width: 1
+  border-color: #2f3d50
+  color: #9ba8b9
+  text-offset: 0 0
   font: verdana-11px-rounded
   anchors.top: parent.top
   anchors.left: parent.left
-  padding: 5
-  tab-spacing: 0
-  padding-left: 20
-  padding-right: 20
+  padding-left: 8
+  padding-right: 8
+  tab-spacing: 2
   &tabWidth: 95
 
+  $hover:
+    background-color: #17213178
+    border-color: #53657d
+    color: #d8dee8
+
   $checked:
-    image-clip: 0 0 96 18
-    color: #dfdfdfff
-
-  $on !checked:
-    image-clip: 0 18 96 18
-    color: #7f7f7fff
-
+    background-color: #1d2a3b90
+    border-color: #71849f
+    color: #f0d58b
 Panel
   id: consolePanel
   anchors.fill: parent
 
   UIWidget
-    image-source: /images/ui/2pixel_up_frame_borderimage
-    image-border: 3
+    background-color: #00000000
+    border-width: 0
     anchors.fill: parent
     margin-top: 16
     focusable: false
@@ -241,9 +242,9 @@ Panel
     id: consoleTabBar
     anchors.left: parent.left
     anchors.bottom: consoleContentPanel.top
-    anchors.right: closeChannelButton.left
-    margin-right: 20
-    margin-left: 18
+    anchors.right: parent.right
+    margin-right: 4
+    margin-left: 6
     margin-bottom: -7
     tab-spacing: 2
     movable: true
@@ -337,6 +338,7 @@ Panel
 
   TabButton
     id: closeChannelButton
+    visible: false
     !tooltip: tr('Close this channel') .. ' (Ctrl+E)'
     image-source: /images/ui/console_buttons
     image-clip: 0 48 16 16
@@ -355,6 +357,7 @@ Panel
 
   TabButton
     id: channelsButton
+    visible: false
     !tooltip: tr('Open new channel') .. ' (Ctrl+O)'
     image-source: /images/ui/console_buttons
     image-clip: 0 0 16 16
@@ -373,6 +376,7 @@ Panel
 
   TabButton
     id: ignoreButton
+    visible: false
     !tooltip: tr('Ignore players')
     image-source: /images/ui/console_buttons
     image-clip: 0 32 16 16
@@ -391,6 +395,7 @@ Panel
 
   TabButton
     id: exivaOption
+    visible: false
     image-clip: 16 64 16 16
     image-source: /images/ui/console_buttons
     anchors.right: readOnlyButton.left
@@ -416,6 +421,7 @@ Panel
       
   UIButton
     id: readOnlyButton
+    visible: false
     text: ""
     anchors.right: parent.right
     anchors.top: parent.top
@@ -459,12 +465,16 @@ Panel
 
   TextEdit
     id: consoleTextEdit
+    background-color: #0a1019a8
+    border-width: 1
+    border-color: #39495f
+    color: #e8edf3
     anchors.left: sayModeButton.right
     anchors.right: toggleChat.left
     anchors.bottom: parent.bottom
     margin-right: 5
-    margin-left: 5
-    margin-bottom: 3
+    margin-left: 4
+    margin-bottom: 4
     shift-navigation: true
     max-length: 255
     height: 18
@@ -472,6 +482,9 @@ Panel
     placeholder-color: #707070
     @onTextChange: onTextChange(self:getText())
 
+    $focus:
+      border-color: #7b91ad
+      background-color: #0d1622c0
   TopToggleButton
     id: toggleChat
     anchors.right: parent.right

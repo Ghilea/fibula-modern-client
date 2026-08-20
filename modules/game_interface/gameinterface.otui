@@ -13,10 +13,9 @@ SelectColumnButton < CheckBox
     opacity: 1
 
 GameBottomPanel < UIWindow
-  image-source: /images/ui/background_dark
-  image-repeated: true
+  background-color: #00000000
+  border-width: 0
   draggable:false
-
   ResizeBorder
     id: bottomResizeBorder
     anchors.bottom: parent.bottom
@@ -149,18 +148,19 @@ UIWidget
     id: gameBottomActionPanel
     phantom: true
     focusable: false
-    margin-right: 12
+    width: 504
     padding-bottom: 2
-    anchors.left: bottomSplitter.left
-    anchors.right: bottomSplitter.right
-    anchors.top: gameBottomStatsBarPanel.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    margin-bottom: 18
     layout:
       type: verticalBox
       fit-children: true
 
   UIWidget
     id: lockPanel
-    size: 12 79
+    size: 0 0
+    visible: false
     anchors.top: gameBottomActionPanel.top
     anchors.bottom: gameBottomActionPanel.bottom
     anchors.left: gameBottomActionPanel.right
@@ -195,10 +195,12 @@ UIWidget
 // end actionsbar
   GameBottomPanel
     id: gameBottomPanel
-    anchors.left: gameBottomCooldownPanel.left
-    anchors.right: gameBottomCooldownPanel.right
-    anchors.top: gameBottomCooldownPanel.bottom
+    width: 560
+    height: 190
+    anchors.left: parent.left
     anchors.bottom: parent.bottom
+    margin-left: 18
+    margin-bottom: 18
 
   GameSidePanel
     id: gameLeftPanel

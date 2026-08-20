@@ -1,0 +1,145 @@
+WowHudFrame < Panel
+  background-color: #10151ee8
+  border-width: 1
+  border-color: #465364
+  padding: 6
+
+WowHudPortrait < Creature
+  size: 58 58
+  border-width: 1
+  border-color: #69798e
+  background-color: #080b10
+
+WowHudHealthBar < UIProgressBar
+  height: 19
+  background-color: #2f8f46
+  border: 1 #050607
+  font: verdana-11px-rounded
+  text-offset: 0 2
+
+WowHudManaBar < UIProgressBar
+  height: 14
+  background-color: #315fb5
+  border: 1 #050607
+  font: verdana-11px-rounded
+  text-offset: 0 1
+
+WowHudExperienceBar < UIProgressBar
+  height: 14
+  background-color: #7540a8
+  border: 1 #050607
+  font: verdana-11px-rounded
+  text-offset: 0 1
+
+Panel
+  id: wowHudRoot
+  anchors.fill: parent
+  phantom: true
+  focusable: false
+
+  WowHudFrame
+    id: playerFrame
+    size: 310 105
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-left: 24
+    margin-top: 24
+
+    WowHudPortrait
+      id: playerPortrait
+      anchors.left: parent.left
+      anchors.top: parent.top
+
+    Label
+      id: playerName
+      anchors.left: playerPortrait.right
+      anchors.top: parent.top
+      anchors.right: playerLevel.left
+      margin-left: 8
+      margin-top: 1
+      font: verdana-11px-rounded
+      color: #f4df9b
+      text: Player
+
+    Label
+      id: playerLevel
+      anchors.right: parent.right
+      anchors.top: parent.top
+      margin-top: 1
+      font: verdana-11px-rounded
+      color: #c9d1dc
+      text: Lv. 1
+
+    WowHudHealthBar
+      id: playerHealth
+      anchors.left: playerPortrait.right
+      anchors.right: parent.right
+      anchors.top: playerName.bottom
+      margin-left: 8
+      margin-top: 6
+      percent: 100
+      text: 0 / 0
+
+    WowHudManaBar
+      id: playerMana
+      anchors.left: playerPortrait.right
+      anchors.right: parent.right
+      anchors.top: playerHealth.bottom
+      margin-left: 8
+      margin-top: 4
+      percent: 100
+      text: 0 / 0
+
+    WowHudExperienceBar
+      id: playerExperience
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      percent: 0
+      text: XP 0%
+
+  WowHudFrame
+    id: targetFrame
+    size: 292 82
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-left: 348
+    margin-top: 24
+    visible: false
+
+    WowHudPortrait
+      id: targetPortrait
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+
+    Label
+      id: targetName
+      anchors.left: targetPortrait.right
+      anchors.top: parent.top
+      anchors.right: parent.right
+      margin-left: 8
+      margin-top: 1
+      font: verdana-11px-rounded
+      color: #ffcf70
+      text: Target
+
+    WowHudHealthBar
+      id: targetHealth
+      anchors.left: targetPortrait.right
+      anchors.right: parent.right
+      anchors.top: targetName.bottom
+      margin-left: 8
+      margin-top: 8
+      percent: 100
+      text: 100%
+
+    Label
+      id: targetHint
+      anchors.left: targetPortrait.right
+      anchors.right: parent.right
+      anchors.top: targetHealth.bottom
+      margin-left: 8
+      margin-top: 5
+      font: verdana-11px-rounded
+      color: #8f9bab
+      text: Current target
