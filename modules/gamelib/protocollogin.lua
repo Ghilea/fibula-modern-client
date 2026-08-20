@@ -35,6 +35,18 @@ function ProtocolLogin:cancelLogin()
 end
 
 function ProtocolLogin:sendLoginPacket()
+        g_logger.info(string.format(
+        '[Fibula Login] host=%s port=%s os=%d protocol=%d client=%d dat=0x%08X spr=0x%08X pic=0x%08X rsa=%s...',
+        tostring(G.host),
+        tostring(G.port),
+        g_game.getOs(),
+        g_game.getProtocolVersion(),
+        g_game.getClientVersion(),
+        g_things.getDatSignature(),
+        g_sprites.getSprSignature(),
+        PIC_SIGNATURE,
+        string.sub(g_game.getRsa(), 1, 20)
+    ))
     local msg = OutputMessage.create()
     msg:addU8(ClientOpcodes.ClientEnterAccount)
     msg:addU16(g_game.getOs())
@@ -276,6 +288,12 @@ function ProtocolLogin:parseOpcode(opcode, msg)
 end
 
 function ProtocolLogin:onError(msg, code)
+    g_logger.error(string.format(
+        '[Fibula Login] network error code=%s message=%s',
+        tostring(code),
+        tostring(msg)
+    ))
+
     local text = translateNetworkError(code, self:isConnecting(), msg)
     signalcall(self.onLoginError, self, text)
 end

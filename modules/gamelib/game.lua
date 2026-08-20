@@ -16,10 +16,24 @@ function g_game.findPlayerItem(itemId, subType, tier)
     return g_game.findItemInContainers(itemId, subType, tier or 0)
 end
 
+local FIBULA_RSA =
+    '1383589175496555516011359225459202586510792493206302029176020005709263' ..
+    '3777016865440010286201615729363127788858889729156186543913276783223694' ..
+    '7553872456033140205555218536070792283327632773558457562430692973109061' ..
+    '0648493194549821256887431982702763941291218917953531792497825482714796' ..
+    '25552587457164097090236827371'
+
 function g_game.chooseRsa(host)
+    if host == 'world.fibula.app' then
+        g_game.setRsa(FIBULA_RSA)
+        g_game.setCustomOs(OsTypes.Windows)
+        return
+    end
+
     if G.currentRsa ~= CIPSOFT_RSA and G.currentRsa ~= OTSERV_RSA then
         return
     end
+
     if host:ends('.tibia.com') or host:ends('.cipsoft.com') then
         g_game.setRsa(CIPSOFT_RSA)
 
@@ -35,8 +49,7 @@ function g_game.chooseRsa(host)
         g_game.setRsa(OTSERV_RSA)
     end
 
-    -- Hack fix to resolve some 760 login issues
-    if g_game.getClientVersion() <= 760 then
+    if g_game.getClientVersion() <= 772 then
         g_game.setCustomOs(2)
     end
 end
