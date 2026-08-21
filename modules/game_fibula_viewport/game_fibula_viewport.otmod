@@ -1,0 +1,13 @@
+Module
+  name: game_fibula_viewport
+  description: Stable legacy 7.72 fullscreen map viewport for Fibula
+  author: Fibula Modern Client
+  version: 0.1.7
+  autoload: true
+  autoload-priority: 1660
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ viewport ]
+
+  @onLoad: FibulaViewport.init()
+  @onUnload: FibulaViewport.terminate()

@@ -1,0 +1,14 @@
+Module
+  name: game_fibula_actionbarpolish
+  description: Modern actionbar counts, target-mode markers and cooldown polish for Fibula
+  author: Fibula Modern Client
+  version: 0.1.0
+
+  autoload: true
+  autoload-priority: 1630
+  sandboxed: true
+  dependencies: [ game_interface, game_actionbar ]
+  scripts: [ actionbarpolish ]
+
+  @onLoad: FibulaActionbarPolish.init()
+  @onUnload: FibulaActionbarPolish.terminate()

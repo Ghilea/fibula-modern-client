@@ -240,42 +240,12 @@ local function executeSpecialAction(specialActionId)
     end
 end
 
-local function resolveActionPlayerItem(button)
-    if not button or not button.item then
-        return nil
-    end
-
-    local virtualItem = button.item:getItem()
-    if not virtualItem then
-        return nil
-    end
-
-    -- Action-bar UIItems are virtual item instances. On old protocols (such
-    -- as Fibula 7.72) UseWith must be sent from the REAL carried/equipped
-    -- item position, otherwise the server rejects the action with
-    -- "Not possible.".
-    if g_game.getClientVersion() < 780 then
-        local itemId = button.item:getItemId()
-        local subType = -1
-
-        -- Keep fluid subtype semantics, but do not over-constrain normal tools,
-        -- runes, rods, etc. when locating the real player item.
-        if virtualItem:isFluidContainer() then
-            subType = button.item:getItemSubType() or -1
-        end
-
-        return g_game.findPlayerItem(itemId, subType, 0)
-    end
-
-    return virtualItem
-end
-
 local function use_item_at_cursor_position(button)
     if not button or not button.item then
         return false
     end
 
-    local item = resolveActionPlayerItem(button)
+    local item = button.item:getItem()
     if not item then
         return false
     end
@@ -385,12 +355,7 @@ function onExecuteAction(button, isPress)
 
     if button.item then
         if action == UseTypes["SelectUseTarget"] then
-            local item = resolveActionPlayerItem(button)
-            if item then
-                modules.game_interface.startUseWith(item)
-            elseif modules.game_textmessage and modules.game_textmessage.displayFailureMessage then
-                modules.game_textmessage.displayFailureMessage(tr('You do not have this object.'))
-            end
+            modules.game_interface.startUseWith(button.item:getItem(), button.item:getItemSubType() or -1)
         end
 
         if action == UseTypes["UseAtCursorPosition"] then
@@ -398,16 +363,11 @@ function onExecuteAction(button, isPress)
         end
 
         if action == UseTypes["UseOnTarget"] then
-            local item = resolveActionPlayerItem(button)
-            if item then
-                local attackingCreature = g_game.getAttackingCreature()
-                if not attackingCreature then
-                    modules.game_interface.startUseWith(item)
-                else
-                    g_game.useWith(item, attackingCreature, button.item:getItemSubType() or -1)
-                end
-            elseif modules.game_textmessage and modules.game_textmessage.displayFailureMessage then
-                modules.game_textmessage.displayFailureMessage(tr('You do not have this object.'))
+            local attackingCreature = g_game.getAttackingCreature()
+            if not attackingCreature then
+                modules.game_interface.startUseWith(button.item:getItem(), button.item:getItemSubType() or -1)
+            else
+                g_game.useWith(button.item:getItem(), attackingCreature, button.item:getItemSubType() or -1)
             end
         end
     end
@@ -415,7 +375,23 @@ function onExecuteAction(button, isPress)
     if action == UseTypes["chatText"] and button.cache.sendAutomatic then
         if button.cache.isSpell then
             spellGroupPressed[tostring(button.cache.primaryGroup)] = true
-            g_game.talk(button.cache.param)
+
+            local handledByRuneMaker = false
+            local runeMaker = modules.game_fibula_runemaker
+
+            if runeMaker and
+               runeMaker.castRuneSpell and
+               button.cache.spellData and
+               (tonumber(button.cache.spellData.source) or 0) > 0 then
+                handledByRuneMaker = runeMaker.castRuneSpell(
+                    button.cache.param,
+                    button.cache.spellData
+                )
+            end
+
+            if not handledByRuneMaker then
+                g_game.talk(button.cache.param)
+            end
         else
             modules.game_console.sendMessage(button.cache.param)
         end

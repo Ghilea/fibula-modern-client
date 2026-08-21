@@ -1,0 +1,13 @@
+Module
+  name: game_fibula_workspace
+  description: Stable backpack persistence with root-screen bounds
+  author: Fibula Modern Client
+  version: 0.1.4
+  autoload: true
+  autoload-priority: 1800
+  sandboxed: true
+  dependencies: [ game_interface, game_containers, game_inventory, game_wowpopup ]
+  scripts: [ workspace ]
+
+  @onLoad: FibulaWorkspace.init()
+  @onUnload: FibulaWorkspace.terminate()

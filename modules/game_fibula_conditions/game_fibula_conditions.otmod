@@ -1,0 +1,13 @@
+Module
+  name: game_fibula_conditions
+  description: Compact WoW-inspired player condition icon strip for Fibula
+  author: Fibula Modern Client
+  version: 0.2.0
+  autoload: true
+  autoload-priority: 1520
+  sandboxed: true
+  dependencies: [ game_interface, game_wowhud, game_fibula_qol ]
+  scripts: [ conditions ]
+
+  @onLoad: FibulaConditions.init()
+  @onUnload: FibulaConditions.terminate()

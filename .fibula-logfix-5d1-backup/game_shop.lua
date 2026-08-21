@@ -87,13 +87,6 @@ function onExtendedOpcode(protocol, code, buffer)
 end
 
 function create()
-    -- game_shop is an extended-opcode module (201). Fibula 7.72 does not
-    -- negotiate extended opcodes, so creating it on login only produces a
-    -- guaranteed protocol error and an unusable empty shop.
-    if g_game.getClientVersion() > 0 and g_game.getClientVersion() < 780 then
-        return
-    end
-
     if gameShopWindow then
         return
     end

@@ -857,27 +857,7 @@ Rect MapView::calcFramebufferSource(const Size& destSize)
         m_visibleDimension.width() == 15 &&
         m_visibleDimension.height() == 11 &&
         m_drawDimension.width() >= 18) {
-        // 5C.4:
-        // 5C.2 exposed 16.0 tiles from the existing 18-tile backing buffer.
-        // That looks good while standing still, but a full 32px walk offset can
-        // consume the entire one-tile reserve on the movement side.
-        //
-        // Use a 15.5-tile crop instead. This only zooms in ~3% from 5C.2 but
-        // creates 80px total horizontal overscan instead of 64px.
-        //
-        // Bias the crop 3/8 of a tile to the right. On 32px Tibia sprites this
-        // gives roughly:
-        //   44px reserve on the LEFT
-        //   36px reserve on the RIGHT
-        //
-        // After a maximum 32px walking offset there is still approximately:
-        //   12px reserve on the problematic left edge
-        //    4px reserve on the already-nearly-fixed right edge
-        //
-        // The logical viewport remains the proven-safe 15x11.
-        const int legacyCropWidth = (m_tileSize * 31) / 2; // 15.5 tiles
-        srcVisible = Size(legacyCropWidth, srcVisible.height());
-        drawOffset.x += (m_tileSize * 3) / 8;
+        srcVisible = Size(16 * m_tileSize, srcVisible.height());
     }
 
     Size srcSize = destSize;

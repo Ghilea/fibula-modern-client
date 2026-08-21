@@ -1,0 +1,14 @@
+Module
+  name: game_fibula_performance
+  description: Safe legacy render smoothing profile for Fibula 7.72
+  author: Fibula Modern Client
+  version: 0.1.1
+
+  autoload: true
+  autoload-priority: 1700
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ performance ]
+
+  @onLoad: FibulaPerformance.init()
+  @onUnload: FibulaPerformance.terminate()

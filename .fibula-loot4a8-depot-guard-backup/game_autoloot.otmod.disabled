@@ -2,7 +2,7 @@ Module
   name: game_autoloot
   description: Manual corpse autoloot with recursive nested bags and Never Loot filter for Fibula
   author: Fibula Modern Client
-  version: 0.1.8
+  version: 0.1.7
   autoload: true
   autoload-priority: 1250
   sandboxed: true

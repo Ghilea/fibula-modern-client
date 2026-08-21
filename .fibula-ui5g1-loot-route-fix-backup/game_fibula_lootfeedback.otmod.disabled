@@ -1,0 +1,14 @@
+Module
+  name: game_fibula_lootfeedback
+  description: Compact modern loot notifications for Fibula
+  author: Fibula Modern Client
+  version: 0.1.0
+
+  autoload: true
+  autoload-priority: 1740
+  sandboxed: true
+  dependencies: [ game_interface, game_textmessage ]
+  scripts: [ lootfeedback ]
+
+  @onLoad: FibulaLootFeedback.init()
+  @onUnload: FibulaLootFeedback.terminate()

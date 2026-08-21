@@ -1,0 +1,14 @@
+Module
+  name: game_fibula_tooltips
+  description: Modern event-driven dark fantasy tooltips for Fibula
+  author: Fibula Modern Client
+  version: 0.1.1
+
+  autoload: true
+  autoload-priority: 1680
+  sandboxed: true
+  dependencies: [ game_interface, game_actionbar ]
+  scripts: [ tooltips ]
+
+  @onLoad: FibulaTooltips.init()
+  @onUnload: FibulaTooltips.terminate()

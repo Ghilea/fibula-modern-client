@@ -6,12 +6,6 @@ local installedLocales
 local currentLocale
 
 function sendLocale(localeName)
-    -- Fibula 7.72 has no extended-opcode channel. Keep locale handling local
-    -- and do not deliberately call ProtocolGame:sendExtendedOpcode(1, ...).
-    if g_game.getClientVersion() > 0 and g_game.getClientVersion() < 780 then
-        return false
-    end
-
     local protocolGame = g_game.getProtocolGame()
     if protocolGame then
         protocolGame:sendExtendedOpcode(ExtendedIds.Locale, localeName)

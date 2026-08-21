@@ -417,17 +417,7 @@ function switchChat(enabled)
     end
 
     if enabled then
-        -- FIBULA_CHAT_FOCUS_BEGIN
-        -- Focus immediately, then once more on the next UI event. The deferred
-        -- focus prevents the toggle/Enter handler or root panel from stealing it.
-        consoleTextEdit:focus()
-        addEvent(function()
-            if consoleTextEdit and consoleTextEdit:isVisible() then
-                consoleTextEdit:focus()
-                consoleTextEdit:setCursorPos(-1)
-            end
-        end)
-        -- FIBULA_CHAT_FOCUS_END        unbindMovingKeys()
+        unbindMovingKeys()
         consoleToggleChat:setTooltip(tr('Disable chat mode, allow to walk using WASD'))
         Keybind.setChatMode(CHAT_MODE.ON)
     else

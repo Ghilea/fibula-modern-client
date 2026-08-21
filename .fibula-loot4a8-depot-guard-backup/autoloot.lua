@@ -1858,58 +1858,7 @@ local function onContainerOpen(
            containerItem:getId() ==
                armedSourceId then
 
-            -- 4A.8 depot guard:
-            --
-            -- Fibula 7.72 does not reliably mark real monster corpses through
-            -- Item:isLyingCorpse() (for example a dead rotworm can report
-            -- corpse=false), so we cannot safely solve this by accepting only
-            -- "corpse" items.
-            --
-            -- Instead, once the server has opened the clicked container we can
-            -- use its authoritative container name to reject persistent player
-            -- storage. OTClient/vBot uses the same name distinction for depot
-            -- handling ("depot" / "locker").
-            local sourceName =
-                tostring(container:getName() or '')
-
-            local lowerName =
-                sourceName:lower()
-
-            local protectedStorage =
-                lowerName:find(
-                    'depot',
-                    1,
-                    true
-                ) ~= nil or
-                lowerName:find(
-                    'locker',
-                    1,
-                    true
-                ) ~= nil or
-                lowerName:find(
-                    'inbox',
-                    1,
-                    true
-                ) ~= nil
-
             clearArmedSource()
-
-            if protectedStorage then
-                g_logger.info(string.format(
-                    '[Fibula AutoLoot] protected storage skipped: cid=%d item=%d name=%s',
-                    container:getId(),
-                    containerItem:getId(),
-                    sourceName
-                ))
-
-                setStatus(
-                    'AutoLoot skipped: protected storage'
-                )
-
-                -- The container remains normally opened for the player.
-                -- We only suppress the loot traversal.
-                return
-            end
 
             setStatus(string.format(
                 'Right-click source opened: item %d',
