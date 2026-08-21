@@ -72,50 +72,6 @@ local function makeFallbackChannelsButton(consolePanel)
     return fallbackButton
 end
 
--- FIBULA_UI_V24_CHANNEL_LAYOUT_BEGIN
-local function layoutChannelsButton(button, consolePanel)
-    if not button or not consolePanel then
-        return
-    end
-
-    local toggle = consolePanel:recursiveGetChildById('toggleChat')
-    local edit = consolePanel:recursiveGetChildById('consoleTextEdit')
-    local sayMode = consolePanel:recursiveGetChildById('sayModeButton')
-
-    if not toggle or not edit or not sayMode then
-        return
-    end
-
-    -- Move the channel selector out of the tab strip and into the input row.
-    button:breakAnchors()
-    button:addAnchor(AnchorRight, 'toggleChat', AnchorLeft)
-    button:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-    button:setMarginRight(4)
-    button:setMarginBottom(4)
-
-    if button:getId() == 'fibulaChannelsButton' then
-        button:setSize({ width = 56, height = 18 })
-    else
-        button:setSize({ width = 18, height = 18 })
-    end
-
-    button:setTooltip('Open channel list (Ctrl+O)')
-    button:show()
-    button:raise()
-
-    -- Rebuild the text-edit anchors so it ends before Channels instead of
-    -- extending underneath the selector.
-    edit:breakAnchors()
-    edit:addAnchor(AnchorLeft, 'sayModeButton', AnchorRight)
-    edit:addAnchor(AnchorRight, button:getId(), AnchorLeft)
-    edit:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-    edit:setMarginLeft(4)
-    edit:setMarginRight(4)
-    edit:setMarginBottom(4)
-    edit:setHeight(18)
-end
--- FIBULA_UI_V24_CHANNEL_LAYOUT_END
-
 local function exposeChannelsButton()
     local consolePanel = getConsolePanel()
     if not consolePanel or consolePanel:isDestroyed() then
@@ -139,15 +95,13 @@ local function exposeChannelsButton()
         stock:setTooltip('Open channel list (Ctrl+O)')
         stock.onClick = requestChannels
         stock:raise()
-        layoutChannelsButton(stock, consolePanel)
 
-        g_logger.info('[Fibula Chat] stock Channels button moved beside Chat toggle')
+        g_logger.info('[Fibula Chat] stock Channels button enabled')
         return true
     end
 
-    local fallback = makeFallbackChannelsButton(consolePanel)
-    layoutChannelsButton(fallback, consolePanel)
-    g_logger.info('[Fibula Chat] fallback Channels button moved beside Chat toggle')
+    makeFallbackChannelsButton(consolePanel)
+    g_logger.info('[Fibula Chat] fallback Channels button created')
     return true
 end
 

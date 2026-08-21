@@ -194,15 +194,6 @@ function bindKeys()
             callback = function()
                 if lastStopAction + 50 > g_clock.millis() then return end
                 lastStopAction = g_clock.millis()
-
-                -- FIBULA_UI_V24_ESCAPE_DISPATCH
-                if modules.game_wowpopup and
-                   modules.game_wowpopup.openFibulaEscapeMenu and
-                   modules.game_wowpopup.openFibulaEscapeMenu() then
-                    return
-                end
-
-                -- Fallback if the Fibula popup module is unavailable.
                 g_game.cancelAttackAndFollow()
             end,
         }

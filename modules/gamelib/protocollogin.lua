@@ -94,7 +94,9 @@ function ProtocolLogin:sendLoginPacket()
 
     if self.getLoginExtendedData then
         local data = self:getLoginExtendedData()
-        msg:addString(data)
+        if data and #data > 0 then
+            msg:addString(data)
+        end
     end
 
     local paddingBytes = g_crypt.rsaGetSize() - (msg:getMessageSize() - offset)

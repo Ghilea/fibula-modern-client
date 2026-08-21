@@ -63,9 +63,6 @@ Panel
 
     Label
       id: playerLevel
-      # FIBULA_UI_V24_LEVEL_WIDTH
-      width: 64
-      text-align: right
       anchors.right: parent.right
       anchors.top: parent.top
       margin-top: 1

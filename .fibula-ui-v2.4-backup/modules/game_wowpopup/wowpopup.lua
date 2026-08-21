@@ -476,65 +476,6 @@ local function positionMinimap()
     return true
 end
 
--- FIBULA_UI_V24_LEGACY_BUTTON_CLEANUP_BEGIN
--- FIBULA_UI_V241_HIDE_AUDIO_ANALYTICS
-local modernUtilityKeywords = {
-    'audio',
-    'analytics',
-    'analytics selector window',
-    'store',
-    'cyclopedia',
-    'prey',
-    'forge',
-    'wheel',
-    'reward',
-    'taskboard',
-    'market',
-    'stash',
-    'imbuement',
-    'quick loot'
-}
-
-local function widgetSearchText(widget)
-    local parts = {}
-
-    local ok, value = pcall(function() return widget:getId() end)
-    if ok and value then table.insert(parts, tostring(value)) end
-
-    ok, value = pcall(function() return widget:getText() end)
-    if ok and value then table.insert(parts, tostring(value)) end
-
-    ok, value = pcall(function() return widget:getTooltip() end)
-    if ok and value then table.insert(parts, tostring(value)) end
-
-    return table.concat(parts, ' '):lower()
-end
-
-local function hideModernUtilityButtons(parent)
-    if not parent or parent:isDestroyed() then
-        return
-    end
-
-    for _, child in ipairs(parent:getChildren() or {}) do
-        local haystack = widgetSearchText(child)
-        local hide = false
-
-        for _, keyword in ipairs(modernUtilityKeywords) do
-            if haystack:find(keyword, 1, true) then
-                hide = true
-                break
-            end
-        end
-
-        if hide then
-            child:hide()
-        else
-            hideModernUtilityButtons(child)
-        end
-    end
-end
--- FIBULA_UI_V24_LEGACY_BUTTON_CLEANUP_END
-
 local function positionUtilityPanel()
     local r = getRoot()
     local rsize = rootSize()
@@ -576,7 +517,6 @@ local function positionUtilityPanel()
         y = math.max(16, rsize.height - height - 24)
     })
 
-    hideModernUtilityButtons(utilityPanel)
     utilityPanel:show()
     utilityPanel:raise()
     return true
@@ -668,71 +608,6 @@ local function toggleInventory()
     return true
 end
 
--- FIBULA_UI_V24_ESCAPE_MENU_BEGIN
-local escapeMenuWindow = nil
-
-local function closeFibulaEscapeMenu()
-    if escapeMenuWindow and not escapeMenuWindow:isDestroyed() then
-        escapeMenuWindow:destroy()
-    end
-    escapeMenuWindow = nil
-end
-
-function openFibulaEscapeMenu()
-    if not g_game.isOnline() then
-        return false
-    end
-
-    if escapeMenuWindow and not escapeMenuWindow:isDestroyed() then
-        escapeMenuWindow:raise()
-        escapeMenuWindow:focus()
-        return true
-    end
-
-    local optionsFunc = function()
-        closeFibulaEscapeMenu()
-        scheduleEvent(function()
-            if modules.client_options and modules.client_options.toggle then
-                modules.client_options.toggle()
-            end
-        end, 1)
-    end
-
-    local logoutFunc = function()
-        closeFibulaEscapeMenu()
-        scheduleEvent(function()
-            if modules.game_interface and modules.game_interface.tryLogout then
-                modules.game_interface.tryLogout(true)
-            end
-        end, 1)
-    end
-
-    escapeMenuWindow = displayGeneralBox(
-        tr('Game Menu'),
-        tr('Choose an action.'),
-        {
-            {
-                text = tr('Options'),
-                callback = optionsFunc
-            },
-            {
-                text = tr('Logout'),
-                callback = logoutFunc
-            },
-            {
-                text = tr('Cancel'),
-                callback = closeFibulaEscapeMenu
-            },
-            anchor = AnchorHorizontalCenter
-        },
-        optionsFunc,
-        closeFibulaEscapeMenu
-    )
-
-    return true
-end
--- FIBULA_UI_V24_ESCAPE_MENU_END
-
 local function bindKeys()
     if boundWidget then
         return
@@ -778,8 +653,6 @@ local function onGameStart()
 end
 
 local function onGameEnd()
-    closeFibulaEscapeMenu()
-
     if inventoryUi then
         inventoryUi:hide()
     end
@@ -813,8 +686,6 @@ function WowPopup.init()
 end
 
 function WowPopup.terminate()
-    closeFibulaEscapeMenu()
-
     disconnect(g_game, {
         onGameStart = onGameStart,
         onGameEnd = onGameEnd

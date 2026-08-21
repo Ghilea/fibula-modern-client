@@ -477,11 +477,7 @@ local function positionMinimap()
 end
 
 -- FIBULA_UI_V24_LEGACY_BUTTON_CLEANUP_BEGIN
--- FIBULA_UI_V241_HIDE_AUDIO_ANALYTICS
 local modernUtilityKeywords = {
-    'audio',
-    'analytics',
-    'analytics selector window',
     'store',
     'cyclopedia',
     'prey',
