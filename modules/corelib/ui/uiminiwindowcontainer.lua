@@ -117,7 +117,14 @@ function UIMiniWindowContainer:fits(child, minContentHeight, maxContentHeight)
 end
 
 function UIMiniWindowContainer:onDrop(widget, mousePos)
-    if (self.onlyPhantomDrop and not (widget.moveOnlyToMain)) or (widget.moveOnlyToMain and not (self.onlyPhantomDrop)) then
+    -- A window whose drag started on gameRootPanel is part of the modern
+    -- floating workspace. Never swallow it into classic Tibia columns.
+    if widget and widget.fibulaFloatingDrag then
+        return true
+    end
+
+    if (self.onlyPhantomDrop and not widget.moveOnlyToMain) or
+        (widget.moveOnlyToMain and not self.onlyPhantomDrop) then
         return true
     end
 
@@ -139,10 +146,12 @@ function UIMiniWindowContainer:onDrop(widget, mousePos)
         end
 
         if widget:getId() == "botWindow" and
-            (widget:getParent():getId() == "gameLeftPanel" or widget:getParent():getId() == "gameLeftExtraPanel" or
-                widget:getParent():getId() == "gameRightExtraPanel") then
+            (widget:getParent():getId() == "gameLeftPanel" or
+             widget:getParent():getId() == "gameLeftExtraPanel" or
+             widget:getParent():getId() == "gameRightExtraPanel") then
             widget:getParent():setWidth(190)
         end
+
         self:fitAll(widget)
         return true
     end

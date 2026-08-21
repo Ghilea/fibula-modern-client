@@ -408,30 +408,59 @@ local function bindMovingKeys()
     gameWalk.bindTurnKey('Control+A', West)
 end
 
+-- FIBULA_CHAT_FOCUS_CHAIN_V23_BEGIN
+-- Lua equivalent of UIWidget::recursiveFocus().
+-- UIWidget:focus() only focuses this widget inside its immediate parent.
+-- A real mouse click establishes the focused-child chain all the way to root.
+local function fibulaFocusChatInputTree()
+    if not consoleTextEdit or consoleTextEdit:isDestroyed() then
+        return
+    end
+
+    if not consoleTextEdit:isVisible() then
+        return
+    end
+
+    local child = consoleTextEdit
+    local guard = 0
+
+    while child and guard < 32 do
+        local parent = child:getParent()
+        if not parent then
+            break
+        end
+
+        if child:isFocusable() then
+            parent:focusChild(child, KeyboardFocusReason)
+        end
+
+        child = parent
+        guard = guard + 1
+    end
+
+    consoleTextEdit:setCursorPos(-1)
+end
+-- FIBULA_CHAT_FOCUS_CHAIN_V23_END
+
 function switchChat(enabled)
-    -- enabled should be true if we enabling the chat and false if disabling it
-    -- consoleToggleChat:setChecked(not consoleToggleChat.isChecked)
     if not (enabled and consoleTextEdit:isVisible()) then
         consoleTextEdit:setVisible(enabled)
         consoleTextEdit:setText('')
     end
 
     if enabled then
-        -- FIBULA_CHAT_FOCUS_BEGIN
-        -- Focus immediately, then once more on the next UI event. The deferred
-        -- focus prevents the toggle/Enter handler or root panel from stealing it.
-        consoleTextEdit:focus()
-        addEvent(function()
-            if consoleTextEdit and consoleTextEdit:isVisible() then
-                consoleTextEdit:focus()
-                consoleTextEdit:setCursorPos(-1)
-            end
-        end)
-        -- FIBULA_CHAT_FOCUS_END        unbindMovingKeys()
+        unbindMovingKeys()
         consoleToggleChat:setTooltip(tr('Disable chat mode, allow to walk using WASD'))
+
+        -- Set keybind mode first, then establish the complete focus chain.
         Keybind.setChatMode(CHAT_MODE.ON)
+
+        fibulaFocusChatInputTree()
+        addEvent(fibulaFocusChatInputTree)
+        scheduleEvent(fibulaFocusChatInputTree, 30)
+        scheduleEvent(fibulaFocusChatInputTree, 100)
     else
-        walkAfterSend = false -- leaving chat -> clear temporary state (covers manual button toggle too)
+        walkAfterSend = false
         bindMovingKeys()
         consoleToggleChat:setTooltip(tr('Enable chat mode'))
         Keybind.setChatMode(CHAT_MODE.OFF)
@@ -2356,6 +2385,23 @@ function consoleController:onGameStart()
 
     -- Update chat mode when game comes online to ensure proper key binding
     updateChatMode()
+
+    -- FIBULA_CHAT_STARTUP_CHAIN_V23_BEGIN
+    local function fibulaStartupChatFocus()
+        if g_game.isOnline() and consoleToggleChat and consoleTextEdit and
+            not consoleToggleChat.isChecked and consoleTextEdit:isVisible() then
+            fibulaFocusChatInputTree()
+        end
+    end
+
+    addEvent(fibulaStartupChatFocus)
+    scheduleEvent(fibulaStartupChatFocus, 50)
+    scheduleEvent(fibulaStartupChatFocus, 150)
+    scheduleEvent(fibulaStartupChatFocus, 300)
+    scheduleEvent(fibulaStartupChatFocus, 600)
+    scheduleEvent(fibulaStartupChatFocus, 1000)
+    -- FIBULA_CHAT_STARTUP_CHAIN_V23_END
+
 
     -- open last channels
     local lastChannelsOpen = g_settings.getNode('lastChannelsOpen')

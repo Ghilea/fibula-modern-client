@@ -31,6 +31,7 @@ ConditionWidget < UIWidget
 
 PhantomMiniWindow
   id: maininventorypanel
+  &save: true
   draggable: true
   phantom: false
   height: 162

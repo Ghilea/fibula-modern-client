@@ -228,6 +228,19 @@ function UIMiniWindow:onDragEnter(mousePos)
         return false
     end
 
+    -- Remember whether this drag started as a true modern floating window.
+    -- Such windows must not interact with the old Tibia side-column docking.
+    self.fibulaFloatingDrag = parent:getId() == 'gameRootPanel'
+
+    if self.fibulaFloatingDrag then
+        self.oldParentDrag = nil
+        self.oldParentDragIndex = nil
+        self.movedWidget = nil
+        self.setMovedChildMargin = nil
+        self.movedOldMargin = nil
+        self.movedIndex = nil
+    end
+
     if parent:getClassName() == 'UIMiniWindowContainer' then
         self.oldParentDrag = parent
         self.oldParentDragIndex = parent:getChildIndex(self)
@@ -249,7 +262,9 @@ end
 
 function UIMiniWindow:onDragLeave(droppedWidget, mousePos)
     if self.movedWidget then
-        self.setMovedChildMargin(self.movedOldMargin or 0)
+        if self.setMovedChildMargin then
+            self.setMovedChildMargin(self.movedOldMargin or 0)
+        end
         self.movedWidget = nil
         self.setMovedChildMargin = nil
         self.movedOldMargin = nil
@@ -258,23 +273,44 @@ function UIMiniWindow:onDragLeave(droppedWidget, mousePos)
 
     self:saveParent(self:getParent())
 
-    -- Note: It seems to prevent the minimap, inventory, and health widgets from moving off the interface panel.
-    if self.moveOnlyToMain or droppedWidget and droppedWidget.onlyPhantomDrop then
-        if not (droppedWidget) or (self.moveOnlyToMain and not (droppedWidget.onlyPhantomDrop)) or
-            (not (self.moveOnlyToMain) and droppedWidget.onlyPhantomDrop) then
-            local virtualParent = self:getParent()
-            virtualParent:removeChild(self)
-            self.oldParentDrag:insertChild(self.oldParentDragIndex, self)
-            self.movedWidget = nil
+    -- A drag that started on gameRootPanel is intentionally floating.
+    -- Keep it there even if the pointer is released over an old side panel.
+    if self.fibulaFloatingDrag then
+        self.fibulaFloatingDrag = nil
+        self.oldParentDrag = nil
+        self.oldParentDragIndex = nil
+        return true
+    end
+
+    -- Native OTClient assumes oldParentDrag exists for moveOnlyToMain windows.
+    -- Keep the original behavior, but only when there really is an old parent.
+    if self.moveOnlyToMain or (droppedWidget and droppedWidget.onlyPhantomDrop) then
+        if not droppedWidget or
+            (self.moveOnlyToMain and not droppedWidget.onlyPhantomDrop) or
+            (not self.moveOnlyToMain and droppedWidget.onlyPhantomDrop) then
+            if self.oldParentDrag then
+                local virtualParent = self:getParent()
+                virtualParent:removeChild(self)
+                self.oldParentDrag:insertChild(self.oldParentDragIndex, self)
+                self.movedWidget = nil
+            end
         end
     end
+
     return true
 end
 
 function UIMiniWindow:onDragMove(mousePos, mouseMoved)
+    -- Modern floating windows should behave like normal UIWindow instances.
+    -- Do not reserve space, draw pseudo-drop gaps or shift old side columns.
+    if self.fibulaFloatingDrag then
+        return UIWindow.onDragMove(self, mousePos, mouseMoved)
+    end
+
     local oldMousePosY = mousePos.y - mouseMoved.y
     local children = rootWidget:recursiveGetChildrenByMarginPos(mousePos)
     local overAnyWidget = false
+
     for i = 1, #children do
         local child = children[i]
         if child:getParent():getClassName() == 'UIMiniWindowContainer' then
